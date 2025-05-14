@@ -8,9 +8,11 @@ MKDIR = mkdir -p
 ZIP = zip -r
 RM = rm -rf
 
+SED ?= sed
+
 METADATA_SCHEMA = schema/description.schema.json
-MODEL_DESCRIPTIONS = $(shell find . -name 'DESCRIPTION'|sed -e 's,^./,,')
-ZIPPED_MODELS = $(shell find . -name 'DESCRIPTION'|sed -e 's,./models,zip,' -e 's,/DESCRIPTION,.zip,')
+MODEL_DESCRIPTIONS = $(shell find . -name 'DESCRIPTION'|$(SED) -e 's,^./,,')
+ZIPPED_MODELS = $(shell find . -name 'DESCRIPTION'|$(SED) -e 's,./models,zip,' -e 's,/DESCRIPTION,.zip,')
 
 all: zip db
 
@@ -23,14 +25,14 @@ models.ndjson: $(MODEL_DESCRIPTIONS)
 		id=$$desc; \
 		id=$${id/models\//}; \
 		id=$${id/\/DESCRIPTION/}; \
-		id=$${id,,}; \
+		id="$$(echo $$id | tr '[:upper:]' '[:lower:]')"; \
 		zip="zip/$$id.zip"; \
 		zip_size="$$(wc -c zip/$$id.zip|cut -d' ' -f1)"; \
 		echo ">>> DB-ifying $$desc"; \
 		cat "$$desc" \
-			|sed "1a \"_id\": \"$$id\"," \
-			|sed "2a \"zip\": \"$$zip\"," \
-			|sed "3a \"zip-size\": \"$$zip_size\"," \
+			| $(SED) "1a \"_id\": \"$$id\"," \
+			| $(SED) "2a \"zip\": \"$$zip\"," \
+			| $(SED) "3a \"zip-size\": \"$$zip_size\"," \
 			| $(TRAF) -i JSON -o JSON - - \
 			2>/dev/null \
 			>> "$@" ; \
