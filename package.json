@@ -18,14 +18,14 @@
   },
   "homepage": "https://github.com/kba/ocr-models#readme",
   "dependencies": {
-    "ajv-cli": "^0.9.0",
+    "ajv-cli": "^5.0.0",
     "app-root-path": "^1.3.0",
+    "coffeescript": "1.10.0",
     "express": "^4.14.0",
     "glob": "^7.0.5",
     "nedb": "^1.8.0",
-    "pug": "2.0.0-beta5",
-    "coffee-script": "1.10.0",
-    "traf": "0.0.8"
+    "pug": "^3.0.3",
+    "traf": "^1.1.0"
   },
   "devDependencies": {
     "nodemon": "^1.10.0"
